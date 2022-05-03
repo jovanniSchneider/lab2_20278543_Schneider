@@ -23,9 +23,12 @@ card_getSimbolos
 */
 
 %Constructor
+card(_,[],Card):- %Si entra una lista vacia la idea es que no se pueda hacer backtracking a la siguiente opcion.
+	Card = [0,[]],!.
 card(Cant,Simbolos,Card):-
 	integer(Cant),Cant>0,
 	Card = [Cant,Simbolos].
+
 
 
 %Pertenencia
@@ -45,6 +48,15 @@ card_getSimbolos(Card,Simbolos):-
 	isCard(Card),
 	card_getSimb(Card,Simbolos).
 
+%Modificadores
+agregarSimbolo([Cant|[Simbolos|_]],Simbolo,NewCard):-
+	append(Simbolos,[Simbolo],NewSimbolos),
+	NewCant is Cant+1,
+	card(NewCant,NewSimbolos,NewCard).
+
+
+
+%--------------------------------------------------------------------
 
 %Metas secundarias (clausulas propias del TDA)
 

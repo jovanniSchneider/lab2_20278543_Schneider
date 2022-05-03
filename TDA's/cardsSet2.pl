@@ -1,0 +1,1 @@
+generarNcartas(Conjunto,)
