@@ -16,15 +16,30 @@ cardsSet(Elements,NumE,MaxC,Seed,CS)
 
 %constructor
 cardsSet(Elements,NumE,MaxC,Seed,CS):-
-    integer(NumE, MaxC, Seed),
-    NumE > 0, MaxC > 0.
+    integer(NumE),
+    integer(MaxC),
+    integer(Seed),
+    NumE > 0, MaxC > 0,
+    crearConjunto([],Elements,NumE,MaxC,CS).
+
+%Selectores
+cardsSet_GetFirstCard([FC|_],FC).
+cardsSet_GetNextCards([_|NC],NC).
+cardsSet_GetNthCard(CS,Cont,Cont,Card):-
+    cardsSet_GetFirstCard(CS,Card).
+cardsSet_GetNthCard(CS,Cont,Position,Card):-
+    cardsSet_GetFirstCard(CS,FC),
+    cardsSet_GetNextCards(CS,NC),
+    Cont1 is Cont+1,
+    cardsSet_GetNthCard(NC,Cont1,Position,Card).
+
 
 
     
 
 
 
-%Metas secundarias (clausulas propias del TDA)
+%------------------Metas secundarias (clausulas propias del TDA)------------------
 
 %Verifica si existe un simbolo en una carta.
 existe(A,[A|_]).
@@ -50,28 +65,30 @@ dobleExistencia(Card1,Card2):-
 
 %Verifica que solo haya un elemento repetido en 2 cartas
 just1Match(Card1,Card2):-
-    existe(A,Card1),existe(A,Card2),
+    existe(A,Card1),existe(A,Card2),!,
     not(dobleExistencia(Card1,Card2)).
 
 verificarConjunto([],_).
 verificarConjunto([First|Conjunto],NewCard):-
     card_getSimbolos(First,Card1),
     card_getSimbolos(NewCard,Card2),
-    just1Match(Card1,Card2),
+    just1Match(Card1,Card2),!,
     verificarConjunto(Conjunto,NewCard).
 
 
 %Crea un conjunto de cartas valido
+
 crearConjunto(Conjunto,_,_,MaxC,ConjuntoOut):-
-    length(Conjunto,MaxC),!,
+    length(Conjunto,MaxC),
     ConjuntoOut = Conjunto.
-crearConjunto([],Elements,NumE,MaxC,ConjuntoOut):-
-    crearCarta([],Elements,NumE,NewCard),
-    append([],[NewCard],NewConjunto),
-    crearConjunto(NewConjunto,Elements,NumE,MaxC,ConjuntoOut).
+crearConjunto(Conjunto,Elements,NumE,MaxC,ConjuntoOut):-
+    N is NumE-1,
+    minSymb is N * N + N + 1,
+    length(Elements, LargoE),
+    LargoE < minSymb,!,fail.
 crearConjunto(Conjunto,Elements,NumE,MaxC,ConjuntoOut):-
     crearCarta([],Elements,NumE,NewCard),
-    verificarConjunto(Conjunto,NewCard),
+    verificarConjunto(Conjunto,NewCard),!,
     append(Conjunto,[NewCard],NewConjunto),
     crearConjunto(NewConjunto,Elements,NumE,MaxC,ConjuntoOut).
     
