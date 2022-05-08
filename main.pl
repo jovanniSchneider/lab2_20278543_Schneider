@@ -26,34 +26,34 @@ cardsSetIsDobble([FirstCard|NextCards]):-
     MaxC >= LargoReal,
     N = 1.
 
+%cardsSetFindTotalCards(Card,TotalCards)
 cardsSetFindTotalCards(Carta,TC):-
     card_getCantidad(Carta,Cantidad),
     N is Cantidad-1,
     TC is N*N + N + 1.
 
+%cardsSetMissingCards(CardsSet,MissingCards)
 cardsSetMissingCards(CS,[]):-
     cardsSetIsDobble(CS),
     cardsSet_GetFirstCard(CS,FC),
     cardsSetFindTotalCards(FC,TC),
     length(CS,Largo),
     Largo = TC.
-%[[[[[[[[[[[[[[[[[[[[FALTA TERMINARLO]]]]]]]]]]]]]]]]]]]]]]]]
-cardsSetToString(CS,CS_STR):-
-    toStringAux(CS,"",CS_STR).
-
-toStringAux([],CS_STR,CS_STR).
-toStringAux(CS,Str,CS_STR):-
+cardsSetMissingCards(CS,MC):-
+    getElements(CS,[],Elements),
     cardsSet_GetFirstCard(CS,FC),
     cardsSet_GetNextCards(CS,NC),
-    card_getSimbolos(FC,Simbolos),
-    atomics_to_string(Simbolos, " ", String),
-    string_concat("Carta: [", String, String1),
-    string_concat(String1,"]  ",String2),
-    string_concat(Str,String2,String3),
-    toStringAux(NC,String3,CS_STR).
+    obtenerNumE(FC,NC,NumE),
+    cardsSet(Elements,NumE,_,_,CSCompleto),
+    eliminarRepetidas(CSCompleto,CS,[],MC).
+
+
+
+
+%cardsSetToString(CardsSet,String)
+cardsSetToString(CS,CS_STR):-
+    toStringAux(CS,"",CS_STR).
     
-
-
 
 %-------------Metas secundarias------------
 
@@ -106,3 +106,21 @@ esPotenciaDe(N,Base):-
     N2 is N / Base,
     esPotenciaDe(N2,Base).
 
+toStringAux([],CS_STR,CS_STR).
+toStringAux(CS,Str,CS_STR):-
+    cardsSet_GetFirstCard(CS,FC),
+    cardsSet_GetNextCards(CS,NC),
+    card_getSimbolos(FC,Simbolos),
+    atomics_to_string(Simbolos, " ", String),
+    string_concat("Carta: [", String, String1),
+    string_concat(String1,"]  ",String2),
+    string_concat(Str,String2,String3),
+    toStringAux(NC,String3,CS_STR).
+
+eliminarRepetidas([],_,CSOut,CSOut).
+eliminarRepetidas([FC|NC],CS2,CSAux,CSOut):-
+    existe(FC,CS2),
+    eliminarRepetidas(NC,CS2,CSAux,CSOut).
+eliminarRepetidas([FC|NC],CS2,CSAux,CSOut):-
+    append(CSAux,[FC],CSAux2),
+    eliminarRepetidas(NC,CS2,CSAux2,CSOut).

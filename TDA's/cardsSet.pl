@@ -16,6 +16,15 @@ cardsSet(Elements,NumE,MaxC,Seed,CS)
 
 %constructor
 cardsSet(Elements,NumE,MaxC,Seed,CS):-
+    var(MaxC),
+    N is NumE-1,
+    MaxC is N * N + N + 1,
+    cardsSet(Elements,NumE,MaxC,Seed,CS).
+cardsSet(Elements,NumE,MaxC,Seed,CS):-
+    var(Seed),
+    Seed = 123,
+    cardsSet(Elements,NumE,MaxC,Seed,CS).
+cardsSet(Elements,NumE,MaxC,Seed,CS):-
     integer(NumE),
     integer(MaxC),
     integer(Seed),
@@ -93,6 +102,24 @@ crearConjunto(Conjunto,Elements,NumE,MaxC,ConjuntoOut):-
     append(Conjunto,[NewCard],NewConjunto),
     crearConjunto(NewConjunto,Elements,NumE,MaxC,ConjuntoOut).
 
+addIfNotExist([],Elements,Salida):-
+    Salida = Elements.
+addIfNotExist([FirstSymbol|NextSymbols],Elements,Salida):-
+    not(existe(FirstSymbol,Elements)),
+    append(Elements,[FirstSymbol],Elements2),
+    addIfNotExist(NextSymbols,Elements2,Salida).
+
+addIfNotExist([FirstSymbol|NextSymbols],Elements,Salida):-
+    existe(FirstSymbol,Elements),
+    addIfNotExist(NextSymbols,Elements,Salida).
+
+getElements([],Elements,Elements).
+getElements(CS,Elements,Salida):-
+    cardsSet_GetFirstCard(CS,FC),
+    cardsSet_GetNextCards(CS,NC),
+    card_getSimbolos(FC,Symbols),
+    addIfNotExist(Symbols,Elements,Elements2),
+    getElements(NC,Elements2,Salida).
 
 
 
