@@ -1,5 +1,6 @@
-:-["TDA's/card.pl"].
-:-["TDA's/cardsSet.pl"].
+:-["TDAs/card.pl"].
+:-["TDAs/cardsSet.pl"].
+:-["TDAs/game.pl"].
 
 %cardsSetIsDobble(CardsSet)
 cardsSetIsDobble(A):-
