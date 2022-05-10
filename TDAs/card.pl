@@ -5,22 +5,30 @@
 Cant: Entero que representa la cantidad de simbolos que contiene la lista Simbolos.
 Simbolos: Lista que contiene los simbolos pertenecientes a la carta
 Card: TDA card
+CardOut = NewCard: TDA card de salida
 
 ---------------Predicados-----------------
-card(CantidadSimbolos,Simbolos,Card)
-isCard(Card).
-card_getCantidad(Card,Cant).
-card_getSimbolos(Card,Simbolos).
-card_getCant(Card,Cant).
-card_getSimb(Card,Simbolos).
+card(CantidadSimbolos,Simbolos,Card)     aridad = 3
+isCard(Card). 						     aridad = 1
+card_getCantidad(Card,Cant).             aridad = 2
+card_getSimbolos(Card,Simbolos).         aridad = 2
+card_getCant(Card,Cant).				 aridad = 2
+card_getSimb(Card,Simbolos).			 aridad = 2
+agregarSimbolo(Card,Simbolo,CardOut)     aridad = 3
 
---------------Metas---------------
+--------------Metas Primarias---------------
 card
 isCard
 card_getCantidad
 card_getSimbolos
-
+%-------------Metas secundarias (clausulas propias del TDA)-----------------
+card_getCant
+card_getSimb
 */
+
+%-----------------------------------------------------------------------------------------------------
+
+%---------------Reglas---------------
 
 %Constructor
 card(_,[],Card):- %Si entra una lista vacia la idea es que no se pueda hacer backtracking a la siguiente opcion.
@@ -57,8 +65,6 @@ agregarSimbolo([Cant|[Simbolos|_]],Simbolo,NewCard):-
 
 
 %--------------------------------------------------------------------
-
-%Metas secundarias (clausulas propias del TDA)
 
 %Unifica el primer elemento de el Card, es decir la cantidad, en la variable Out.
 card_getCant([Cant|_],Out):-

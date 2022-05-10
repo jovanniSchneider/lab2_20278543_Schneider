@@ -11,15 +11,56 @@
 /*
 ----------------Dominios------------------
 Elements: Lista desde donde se puede obtener una muestra de elementos (números, letras, figuras, etc.) para construir el conjunto de cartas.
-numE: Entero positivo que indica la cantidad de elementos esperada en cada carta
-maxC: Entero que indica la cantidad máxima de cartas que se busca generar en el conjunto. Si maxC es una variable, entonces se producen todas las cartas posibles para un conjunto válido y esta variable toma el valor de la cantidad de cartas máximas generadas.
-seed: Semilla usada para generar números pseudo-aleatorios, utilice la misma función disponible para el laboratorio 1, pero convertido su código a una relación en prolog.
+NumE: Entero positivo que indica la cantidad de elementos esperada en cada carta
+MaxC: Entero que indica la cantidad máxima de cartas que se busca generar en el conjunto. Si maxC es una variable, entonces se producen todas las cartas posibles para un conjunto válido y esta variable toma el valor de la cantidad de cartas máximas generadas.
+Seed: Semilla usada para generar números pseudo-aleatorios, utilice la misma función disponible para el laboratorio 1, pero convertido su código a una relación en prolog.
 CS: TDA con el set de cartas generado.
-
+FC: Primera carta listada del TDA cardsSet.
+NC: Siguientes cartas listadas despues de la primera de un TDA cardsSet.
+N: Orden del plano proyectivo.
+A: Elemento cualquiera a buscar en una lista
+B: Lista en la que se desea buscar un elemento
+Card: TDA card
+CardOut = NewCard: TDA card de salida
+Conjunto: Lista de cartas antes de ser un CardsSet
+Position: Numero que representa un indice dentro de una lista
 ---------------Predicados-----------------
-cardsSet(Elements,NumE,MaxC,Seed,CS)
+cardsSet(Elements,NumE,MaxC,Seed,CS).                            aridad = 5
+cardsSet_GetFirstCard(CS,FC).                                    aridad = 2
+cardsSet_GetNextCards(CS,NC).                                    aridad = 2
+cardsSet_GetNthCard(CS,Cont,Position,Card).                      aridad = 4
+existe(A,B).                                                     aridad = 2
+crearCarta(Card,Elements,NumE,CardOut).                          aridad = 4
+dobleExistencia(Card1,Card2).                                    aridad = 2
+just1Match(Card1,Card2).                                         aridad = 2
+verificarConjunto(CS,NewCard).                                   aridad = 2
+crearConjunto(Conjunto,Elements,NumE,MaxC,ConjuntoOut).          aridad = 5
+addIfNotExist(Elements1,Elements2,Salida).                       aridad = 3
+getElements(CS,Elements,Salida).                                 aridad = 3
+myRandom(Xn, Xn1).                                               aridad = 2
 
+
+-------------Metas Primarias--------------
+cardsSet
+cardsSet_GetFirstCard
+cardsSet_GetNextCard
+cardsSet_GetNthCard
+
+------------Metas Secundarias-------------
+existe
+crearCarta
+dobleExistencia
+just1Match
+verificarConjunto
+crearConjunto
+addIfNotExist
+getElements
+myRandom
 */
+
+%-----------------------------------------------------------------------------------------------------
+
+%---------------Reglas---------------
 
 %constructor
 cardsSet(Elements,NumE,MaxC,Seed,CS):-
@@ -43,8 +84,12 @@ cardsSet(Elements,NumE,MaxC,Seed,CS):-
 %Funcion cardsSetIsDobble presente en el main
 
 %Selectores
+
+%Unifica FC con la primera carta del CS
 cardsSet_GetFirstCard([FC|_],FC).
+%Unifica NC con las cartas siguientes del CS despues de la primera 
 cardsSet_GetNextCards([_|NC],NC).
+%Obtiene la n-ésima (nth) carta desde el conjunto de cartas partiendo desde 0 hasta (totalCartas-1)
 cardsSet_GetNthCard(CS,Cont,Cont,Card):-
     cardsSet_GetFirstCard(CS,Card).
 cardsSet_GetNthCard(CS,Cont,Position,Card):-
@@ -61,6 +106,8 @@ cardsSet_GetNthCard(CS,Cont,Position,Card):-
 %------------------Metas secundarias (clausulas propias del TDA)------------------
 
 %Verifica si existe un simbolo en una carta.
+existe(_,[]):-
+    !,fail.
 existe(A,[A|_]).
 existe(A,[_|B]):-
     existe(A,B).
@@ -87,6 +134,7 @@ just1Match(Card1,Card2):-
     existe(A,Card1),existe(A,Card2),!,
     not(dobleExistencia(Card1,Card2)).
 
+%Verifica que una carta que se quiere agregar a un conjunto coincida solo en un elemento con cada una de las cartas del conjunto.
 verificarConjunto([],_).
 verificarConjunto([First|Conjunto],NewCard):-
     card_getSimbolos(First,Card1),
@@ -96,7 +144,6 @@ verificarConjunto([First|Conjunto],NewCard):-
 
 
 %Crea un conjunto de cartas valido
-
 crearConjunto(Conjunto,_,_,MaxC,ConjuntoOut):-
     length(Conjunto,MaxC),
     ConjuntoOut = Conjunto.
@@ -111,6 +158,8 @@ crearConjunto(Conjunto,Elements,NumE,MaxC,ConjuntoOut):-
     append(Conjunto,[NewCard],NewConjunto),
     crearConjunto(NewConjunto,Elements,NumE,MaxC,ConjuntoOut).
 
+
+%Agrega un elemento a una lista si es que este no existe en la misma
 addIfNotExist([],Elements,Salida):-
     Salida = Elements.
 addIfNotExist([FirstSymbol|NextSymbols],Elements,Salida):-
@@ -122,6 +171,8 @@ addIfNotExist([FirstSymbol|NextSymbols],Elements,Salida):-
     existe(FirstSymbol,Elements),
     addIfNotExist(NextSymbols,Elements,Salida).
 
+
+%Obtiene el conjunto de elementos que forman a las cartas del CS
 getElements([],Elements,Elements).
 getElements(CS,Elements,Salida):-
     cardsSet_GetFirstCard(CS,FC),
