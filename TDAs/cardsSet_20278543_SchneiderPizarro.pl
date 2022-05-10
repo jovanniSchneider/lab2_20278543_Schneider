@@ -1,4 +1,4 @@
-:- ["card.pl"].
+:- ["card_20278543_SchneiderPizarro.pl"].
 %TDA cardsSet
 %Representacion: cardList ([card,card,card,...]).
 %Para crear cartas el cardsSet utiliza la siguiente proposición de manera recursiva: 

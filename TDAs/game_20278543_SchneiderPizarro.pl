@@ -1,4 +1,4 @@
-:- ["cardsSet.pl"].
+:- ["cardsSet_20278543_SchneiderPizarro.pl"].
 
 %TDA game
 %Representacion: NumPlayers X Players X CardsSet X Mode X Scores X Turn X State
