@@ -1,5 +1,3 @@
-:-["TDAs/card_20278543_SchneiderPizarro.pl"].
-:-["TDAs/cardsSet_20278543_SchneiderPizarro.pl"].
 :-["TDAs/game_20278543_SchneiderPizarro.pl"].
 
 /*
